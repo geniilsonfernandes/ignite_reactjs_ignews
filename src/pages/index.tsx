@@ -3,11 +3,13 @@ import Head from "next/head";
 import Image from "next/image";
 import { GetStaticProps } from "next";
 import { SubscribeButton } from "../components/SubscribeButton";
+import { stripe } from "../services/stripe";
+import formatPrice from "../utils/format-price";
 
 interface HomeProps {
   product: {
     priceId: string;
-    amount: string;
+    amount: number;
   };
 }
 
@@ -25,7 +27,7 @@ export default function Home({ product }: HomeProps) {
           </h1>
           <p>
             Get acess to all the publications <br />
-            <span>for {product.amount} month</span>
+            <span>for {formatPrice(product.amount)} month</span>
           </p>
           <SubscribeButton />
         </section>
@@ -42,20 +44,17 @@ export default function Home({ product }: HomeProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // const price = await stripe.prices.retrieve("price_1Iqmo5FWbIUK0S7vGDt6CtJU");
+  const price = await stripe.prices.retrieve("price_1MNzQlGIVYiT8HnsyAbdcmYB");
 
-  // const product = {
-  //   priceId: price.id,
-  //   amount: new Intl.NumberFormat("en-US", {
-  //     style: "currency",
-  //     currency: "USD",
-  //   }).format(price.unit_amount / 100),
-  // };
+  const product = {
+    priceId: price.id,
+    amount: price.unit_amount! / 100,
+  };
 
   return {
     props: {
-      product: { amount: "100", priceId: "234254" },
-    } as HomeProps,
+      product,
+    },
     revalidate: 60 * 60 * 24, // 24 hours
   };
 };
