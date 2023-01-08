@@ -1,9 +1,7 @@
+import styles from "./home.module.scss";
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "@next/font/google";
 import { GetStaticProps } from "next";
-
-import styles from "./home.module.scss";
 import { SubscribeButton } from "../components/SubscribeButton";
 
 interface HomeProps {
